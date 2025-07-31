@@ -2,7 +2,6 @@
   "name": "romanticside",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://rajiv-01.github.io/surprise",
   "dependencies": {
     "@fireworks-js/react": "^2.10.8",
     "@testing-library/dom": "^10.4.0",
