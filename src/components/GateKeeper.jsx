@@ -6,28 +6,39 @@ export default function Gatekeeper({ onAccessGranted }) {
   const [error, setError] = useState("");
   const [unlocked, setUnlocked] = useState(false);
 
-  // ✅ Multiple acceptable names (all lowercase)
-  const acceptedNicknamesYou = ["tudkuu", "tudku", "tudu", "baby"];
-  const acceptedNicknamesMe = ["piddi", "piddii", "pidii", "love"];
+  // ✅ Accepted variations (all lowercase for comparison)
+  const acceptedYou = [
+    "tudkuu",
+    "tudku",
+    "tudkuuu",
+    "tudkuuuu",
+    "tudkuuuuu",
+    "baby",
+  ];
+  const acceptedMe = [
+    "piddi",
+    "piddii",
+    "pidii",
+    "piddiiiii",
+    "piddiiiiii",
+    "chottuu",
+  ];
 
   useEffect(() => {
-    const hasAccess = localStorage.getItem("access_granted");
+    const hasAccess = sessionStorage.getItem("access_granted");
     if (hasAccess) {
       setUnlocked(true);
       onAccessGranted();
     }
-  }, []);
+  }, [onAccessGranted]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const userInputYou = nicknameYou.trim().toLowerCase();
-    const userInputMe = nicknameMe.trim().toLowerCase();
+    const inputYou = nicknameYou.trim().toLowerCase();
+    const inputMe = nicknameMe.trim().toLowerCase();
 
-    const isYouCorrect = acceptedNicknamesYou.includes(userInputYou);
-    const isMeCorrect = acceptedNicknamesMe.includes(userInputMe);
-
-    if (isYouCorrect && isMeCorrect) {
-      localStorage.setItem("access_granted", "true");
+    if (acceptedYou.includes(inputYou) && acceptedMe.includes(inputMe)) {
+      sessionStorage.setItem("access_granted", "true");
       setUnlocked(true);
       onAccessGranted();
     } else {

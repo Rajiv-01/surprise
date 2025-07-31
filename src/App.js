@@ -338,6 +338,7 @@ const App = () => {
   useEffect(() => {
     window.scrollTo(0, 0); // Reset scroll to top on every mount
   }, []);
+
   useEffect(() => {
     if (isPlaying && sound) {
       sound.stop(); // Stop the current sound
@@ -896,7 +897,7 @@ const App = () => {
             </Modal>
 
             {/* Hero Section - Updated for Girlfriend Day */}
-            <div className="relative z-10 container mx-auto mt-12 px-2 py-8 max-w-5xl animate-fade-in-up transition-all duration-500 scale-95 hover:scale-100">
+            <div className="relative z-10 container mx-auto mt-12 px-2 py-8 max-w-5xl ">
               <div className="text-center mb-10 p-2 bg-white/40 backdrop-blur-2xl rounded-3xl border border-white/40 shadow-2xl">
                 <section className="relative py-20 flex items-center justify-center overflow-hidden">
                   <div className="absolute inset-0 z-0 bg-cover opacity-10 animate-pulse" />
