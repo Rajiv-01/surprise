@@ -965,6 +965,12 @@ const RomanticPiano = () => {
       ref={pianoRef}
       className="relative bg-gradient-to-b from-gray-200 to-gray-400 p-4 rounded-2xl border border-gray-300 shadow-2xl w-full max-w-4xl mx-auto overflow-hidden"
     >
+      <h3 className="text-3xl font-extrabold text-pink-600 mb-4 text-center">
+        <Music className="inline-block w-8 h-8 mr-2 text-pink-500" />
+        Love's Melody Composer
+        <Music className="inline-block w-8 h-8 ml-2 text-pink-500" />
+      </h3>
+
       {/* Piano Keys Section */}
       <div className="relative flex items-end min-h-[16rem] rounded-b-lg shadow-inner bg-gray-100 p-1">
         {renderKeys()}
@@ -1044,6 +1050,12 @@ const RomanticPiano = () => {
           >
             <StopCircle className="inline-block w-6 h-6 mr-2" /> Stop
           </button>
+          {currentSongName && (
+            <span className="text-pink-700 font-medium text-base mt-4 sm:mt-0 sm:ml-4 px-2 text-center w-full">
+              Currently Playing:{" "}
+              <span className="font-bold">{currentSongName}</span>
+            </span>
+          )}
         </div>
       </div>
     </div>

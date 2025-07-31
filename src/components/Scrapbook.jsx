@@ -127,11 +127,11 @@ export default function ScrapbookFlipbook() {
     <div className="scrapbook-container flex flex-col items-center gap-6 animate-fade-in px-2 pb-8">
       <HTMLFlipBook
         width={350}
-        height={500}
+        height={600}
         size="stretch"
         minWidth={300}
         maxWidth={600}
-        minHeight={400}
+        minHeight={500}
         maxHeight={800}
         maxShadowOpacity={0.5}
         showCover={true}

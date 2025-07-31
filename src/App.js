@@ -146,11 +146,12 @@ const App = () => {
 
   const [loading, setLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [currentSong, setCurrentSong] = useState(0);
-  const [play, { pause, sound }] = useSound(playlist[currentSong].src, {
-    loop: true,
-  });
+
+  // music player
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef(null);
+
   const [specialDates, setSpecialDates] = useState(() => {
     const saved = localStorage.getItem("specialDates");
     return saved ? JSON.parse(saved) : [];
@@ -165,6 +166,32 @@ const App = () => {
   const fireworksTimeoutRef = useRef(null);
   const audioContextRef = useRef(null);
   const fireworksSoundIntervalRef = useRef(null);
+
+  // music player use Effects
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+
+    const newAudio = new Audio(playlist[currentIndex].src);
+    audioRef.current = newAudio;
+    newAudio.loop = true;
+
+    // Wait until user interaction (e.g. play button) before playing
+    if (isPlaying) {
+      newAudio
+        .play()
+        .catch((err) => console.warn("Autoplay blocked: ", err.message));
+    }
+
+    newAudio.onended = () => setIsPlaying(false);
+
+    return () => {
+      newAudio.pause();
+      newAudio.currentTime = 0;
+    };
+  }, [currentIndex, isPlaying]);
 
   // Initialize Web Audio Context
   const initAudioContext = () => {
@@ -326,24 +353,25 @@ const App = () => {
   };
 
   const toggleMusic = () => {
-    if (!isPlaying) {
-      play();
-      setIsPlaying(true);
-    } else {
-      pause();
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (isPlaying) {
+      audio.pause();
       setIsPlaying(false);
+    } else {
+      audio
+        .play()
+        .then(() => setIsPlaying(true))
+        .catch((err) =>
+          console.warn("Playback failed. User interaction required.", err)
+        );
     }
   };
 
   useEffect(() => {
     window.scrollTo(0, 0); // Reset scroll to top on every mount
   }, []);
-
-  useEffect(() => {
-    if (isPlaying && sound) {
-      sound.stop(); // Stop the current sound
-    }
-  }, [currentSong]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -392,10 +420,10 @@ const App = () => {
   };
   useEffect(() => {
     if (showSurpriseVideo) {
-      pause(); // Pause background music
+      if (audioRef.current) audioRef.current.pause();
     } else {
-      if (isPlaying) {
-        play(); // Resume only if music was playing
+      if (isPlaying && audioRef.current) {
+        audioRef.current.play().catch(() => {});
       }
     }
   }, [showSurpriseVideo]);
@@ -561,17 +589,9 @@ const App = () => {
                   size={22}
                   className="text-pink-500 cursor-pointer hover:text-pink-600 transition-colors"
                   onClick={() => {
-                    const prevSong =
-                      currentSong === 0 ? playlist.length - 1 : currentSong - 1;
-                    setCurrentSong(prevSong);
-                    if (isPlaying) {
-                      pause();
-                      setIsPlaying(false);
-                      setTimeout(() => {
-                        play();
-                        setIsPlaying(true);
-                      }, 100);
-                    }
+                    setCurrentIndex((prev) =>
+                      prev === 0 ? playlist.length - 1 : prev - 1
+                    );
                   }}
                 />
 
@@ -595,23 +615,12 @@ const App = () => {
                   size={22}
                   className="text-pink-500 cursor-pointer hover:text-pink-600 transition-colors"
                   onClick={() => {
-                    const nextSong =
-                      currentSong === playlist.length - 1 ? 0 : currentSong + 1;
-                    setCurrentSong(nextSong);
-                    if (isPlaying) {
-                      pause();
-                      setIsPlaying(false);
-                      setTimeout(() => {
-                        play();
-                        setIsPlaying(true);
-                      }, 100);
-                    }
+                    setCurrentIndex((prev) => (prev + 1) % playlist.length);
                   }}
                 />
-
                 {/* Song Title Display */}
                 <div className="ml-2 text-xs text-pink-600 font-medium max-w-24 truncate">
-                  {playlist[currentSong].title}
+                  {playlist[currentIndex].title}
                 </div>
               </div>
             </div>
